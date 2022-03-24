@@ -3,3 +3,12 @@
 
 # JetBrains IDEs such as WebStorm
 .idea/
+
+# Third party Node JavaScript dependencies
+node_modules/
+
+# Next.js & Vercel
+.next/
+out/
+build/
+.vercel
