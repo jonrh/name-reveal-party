@@ -2,15 +2,16 @@ import React, {useState} from "react";
 import Head from "next/head";
 
 const inputStyle =
-  "my-3 px-4 py-2 " +
+  "my-3 py-2 px-4 " +
   "border-2 border-gray-300 " +
   "text-2xl text-center rounded " +
-  "form-control rounded transition ease-in-out w-full";
+  "form-control transition ease-in-out w-full";
 
 const buttonStyle =
+  "py-4 px-4 " +
+  "text-2xl " +
   "bg-gray-300 " +
-  "py-2 px-4 rounded text-2x°xl " +
-  "w-full";
+  "rounded w-full";
 
 export default function Index() {
   const [ready, setReady] = useState(false);
@@ -29,7 +30,7 @@ export default function Index() {
           type="text"
           value={name}
           autoFocus={true}
-          placeholder="Jón Jónsson"
+          placeholder="Dæmi: Jón Jónsson"
           className={inputStyle}
           onChange={event => setName(event.target.value)}
         />
