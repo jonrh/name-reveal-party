@@ -1,0 +1,5 @@
+# macOS Finder preference files
+.DS_Store
+
+# JetBrains IDEs such as WebStorm
+.idea/
