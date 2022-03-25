@@ -1,5 +1,5 @@
 {
-  "name": "my-app",
+  "name": "name-reveal-party",
   "version": "0.1.0",
   "private": true,
   "scripts": {
@@ -9,6 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "faunadb": "4.5.2",
     "next": "12.1.0",
     "react": "17.0.2",
     "react-dom": "17.0.2"

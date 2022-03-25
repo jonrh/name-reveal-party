@@ -1,6 +1,24 @@
 import React, { useState } from "react";
 import Head from "next/head";
 
+/** Makes a POST request to the API with a guess what the name is. */
+function guessApi(player, guess) {
+  return fetch(
+    "/api/guess",
+    {
+      method: "POST",
+      headers: {
+        "Accept": "application/json",
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        player: player,
+        guess: guess,
+      })
+    }
+  );
+}
+
 const labelStyle = `text-3xl font-bold`;
 
 const inputStyle = `
@@ -19,24 +37,34 @@ const buttonStyle = `
 
 export default function Index() {
   const [ready, setReady] = useState(false);
-  const [playerName, setPlayerName] = useState("");
+  const [player, setPlayer] = useState("");
   const [guess, setGuess] = useState("");
   const [guesses, setGuesses] = useState([]);
 
+  // A hacky way to re-use the input and submit button UI instead
+  // of creating re-usable components and pass down props and such.
   const label = ready ? "Systir Nóa heitir:" : "Hvað heitir þú?";
   const placeholder = ready ? "nafn" : "Dæmi: Jón Jónsson";
   const buttonLabel = ready ? "Giska️" : "Áfram!";
-  const inputValue = ready ? guess : playerName;
+  const inputValue = ready ? guess : player;
+
+  // Returns a random integer between 0 - 9999. This is a hacky
+  // safety net in case any two players will have the same name.
+  const random = () => Math.floor(Math.random() * 10000);
 
   const onInput = (event) => {
-    ready ? setGuess(event.target.value) : setPlayerName(event.target.value);
+    ready ? setGuess(event.target.value) : setPlayer(event.target.value);
   };
 
   const onSubmit = () => {
     if (ready) {
+      guessApi(player, guess).then(response => console.log(response));
+
       setGuesses(prevState => [...prevState, guess]);
       setGuess("");
     } else {
+      // If I want to enable random number for player names
+      // setPlayer(player +" #"+ random());
       setReady(true);
     }
   };
@@ -71,9 +99,10 @@ export default function Index() {
 
         {/* Debug: */}
         <p className="mt-5">Ready: {ready.toString()}</p>
-        <p>Player name: {playerName}</p>
+        <p>Player: {player}</p>
         <p>Guesses: {guesses.join(", ")}</p>
       </main>
     </>
   )
 }
+

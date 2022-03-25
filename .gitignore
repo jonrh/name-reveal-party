@@ -12,3 +12,6 @@ node_modules/
 out/
 build/
 .vercel
+
+# Environment variables for local development
+.env
