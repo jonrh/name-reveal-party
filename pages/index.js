@@ -1,5 +1,6 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Head from "next/head";
+import Confetti from "react-confetti";
 
 /** Makes a POST request to the API with a guess what the name is. */
 function guessApi(player, guess) {
@@ -40,6 +41,17 @@ export default function Index() {
   const [player, setPlayer] = useState("");
   const [guess, setGuess] = useState("");
   const [guesses, setGuesses] = useState([]);
+  const [windowSize, setWindowSize] = useState({
+    width: 0,
+    height: 0,
+  });
+
+  useEffect(() => {
+    setWindowSize({
+      width: window.innerWidth,
+      height: window.innerHeight,
+    })
+  }, []);
 
   // A hacky way to re-use the input and submit button UI instead
   // of creating re-usable components and pass down props and such.
@@ -77,6 +89,8 @@ export default function Index() {
 
       {/* Background image */}
       <div className="bgTeddy" />
+
+      <Confetti width={windowSize.width} height={windowSize.height} />
 
       <main className="text-center mx-5 my-0">
         <p className={labelStyle}>{label}</p>

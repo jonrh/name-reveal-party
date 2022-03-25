@@ -6,6 +6,7 @@
 
 # Third party Node JavaScript dependencies
 node_modules/
+yarn-error.log
 
 # Next.js & Vercel
 .next/
