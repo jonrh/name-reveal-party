@@ -23,6 +23,10 @@ export default function Authentication() {
 
 function Dashboard(props) {
   const { faunaSecret } = props;
+
+  const [resetAllData, setResetAllData] = useState(false);
+  const toggleResetAllData = () => setResetAllData(prev => !prev);
+
   const [guesses, setGuesses] = useState([]);
   const addGuess = guess => setGuesses(prevGuesses => [guess, ...prevGuesses]);
 
@@ -32,17 +36,48 @@ function Dashboard(props) {
 
     // event is a number when the stream starts, after that it is an object
     const readyToProcessEvents = typeof(event) !== "number";
+    const notRemoveEvent = event.action !== "remove";
 
-    if (readyToProcessEvents) {
+    if (readyToProcessEvents && notRemoveEvent) {
       const [player, guess] = event.index.values;
 
-      console.log(`Player: ${player}`);
-      console.log(`Guess: ${guess}`);
+      // console.log(`Player: ${player}`); // Debug
+      // console.log(`Guess: ${guess}`); // Debug
 
       addGuess(guess);
     }
   }
 
+  /** Deletes all guesses in Fauna */
+  useEffect(() => {
+    if (resetAllData) {
+      const faunaClient = new faunadb.Client({
+        secret: faunaSecret,
+        domain: "db.eu.fauna.com",
+      });
+
+      faunaClient.query(
+        q.Map(
+          q.Paginate(q.Documents(q.Collection("guesses")),
+            { size: 100000 }
+          ),
+          q.Lambda(
+           ["ref"],
+            q.Delete(q.Var("ref"))
+          )
+        )
+      ).then(results => {
+          console.log("All guesses in Fauna deleted");
+          console.log(results);
+          setGuesses([]);
+        }).catch(error => {
+          console.log("Error attempting to delete all guesses in Fauna");
+          console.log(error);
+      })
+    }
+  }, [resetAllData])
+
+  /** Fetch existing data and stream subscription */
   useEffect(() => {
     const faunaClient = new faunadb.Client({
       secret: faunaSecret,
@@ -73,12 +108,22 @@ function Dashboard(props) {
         stream.close;
       })
       .start();
+
+    return () => stream.close(); // cleanup
   }, [])
 
   return (
-    <main className="text-center mx-5 my-10">
-      <p className="text-3xl font-bold">Dashboard</p>
-      <p>Guesses:</p>
+    <main className="text-center mx-5 my-5">
+      <button
+        className="text-white hover:text-black"
+        onClick={toggleResetAllData}
+      >
+        delete all data
+      </button>
+
+      <p className="text-3xl">❤️</p>
+      <h1 className="text-3xl font-bold">Nafnaveisla</h1>
+      <p>Gisk:</p>
       <ul>
         {guesses.map(guess => <li key={Math.random()}>{guess}</li>)}
       </ul>
