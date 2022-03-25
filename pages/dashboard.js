@@ -9,8 +9,10 @@ export default function Dashboard() {
     console.log("New stream event:")
     console.log(event);
 
-    // event is a number when the stream starts, after that an object
-    if (typeof(event) !== "number") {
+    // event is a number when the stream starts, after that it is an object
+    const readyToProcessEvents = typeof(event) !== "number";
+
+    if (readyToProcessEvents) {
       const [player, guess] = event.index.values;
 
       console.log(`Player: ${player}`);
