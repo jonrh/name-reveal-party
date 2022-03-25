@@ -26,7 +26,7 @@ function Dashboard(props) {
   const [guesses, setGuesses] = useState([]);
   const addGuess = guess => setGuesses(prevGuesses => [guess, ...prevGuesses]);
 
-  const report = event => {
+  const onFaunaEvent = event => {
     console.log("New stream event:")
     console.log(event);
 
@@ -49,12 +49,25 @@ function Dashboard(props) {
       domain: "db.eu.fauna.com",
     });
 
-    const indexRef = q.Match(q.Index("all_guesses"));
+    const allGuessesRef = q.Match(q.Index("all_guesses"));
     const streamOptions = { fields: ["action", "document", "index"]};
 
-    const stream = faunaClient.stream(indexRef, streamOptions)
-      .on("start", start => report(start))
-      .on("set", set => report(set))
+    // Fetch all existing guesses. Just in case we need to refresh.
+    faunaClient.query(
+      q.Paginate(allGuessesRef, { size: 100000})
+    ).then(response => {
+      response.data.forEach(entry => {
+        const player = entry[0];
+        const guess = entry[1];
+
+        addGuess(guess);
+      })
+    })
+
+    // Subscribe to guess updates sent by Fauna to keep a live update
+    const stream = faunaClient.stream(allGuessesRef, streamOptions)
+      .on("start", start => onFaunaEvent(start))
+      .on("set", set => onFaunaEvent(set))
       .on("error", error => {
         console.log("Error: ", error);
         stream.close;
