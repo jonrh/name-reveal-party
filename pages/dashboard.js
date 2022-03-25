@@ -32,7 +32,6 @@ export default function Dashboard() {
       domain: "db.eu.fauna.com",
     });
 
-    const collectionRef = q.Documents(q.Collection("guesses"));
     const indexRef = q.Match(q.Index("all_guesses"));
     const streamOptions = { fields: ["action", "document", "index"]};
 
