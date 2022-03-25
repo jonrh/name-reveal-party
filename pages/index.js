@@ -90,7 +90,7 @@ export default function Index() {
       {/* Background image */}
       <div className="bgTeddy" />
 
-      <Confetti width={windowSize.width} height={windowSize.height} />
+      {/*<Confetti width={windowSize.width} height={windowSize.height} />*/}
 
       <main className="text-center mx-5 my-0">
         <p className={labelStyle}>{label}</p>

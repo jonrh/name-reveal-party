@@ -121,11 +121,13 @@ function Dashboard(props) {
         delete all data
       </button>
 
-      <p className="text-3xl">❤️</p>
-      <h1 className="text-3xl font-bold">Nafnaveisla</h1>
-      <p>Gisk:</p>
-      <ul>
-        {guesses.map(guess => <li key={Math.random()}>{guess}</li>)}
+      <p className="text-8xl">❤️</p>
+      <h1 className="text-8xl font-bold">Nafnaveisla</h1>
+      <p className="mt-20 text-8xl">Gisk: {guesses.length}</p>
+      <ul className="mt-20">
+        {guesses.slice(0, 5).map(guess =>
+          <li className="text-6xl mt-5" key={Math.random()}>{guess}</li>
+        )}
       </ul>
     </main>
   );
