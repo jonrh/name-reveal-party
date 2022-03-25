@@ -19,7 +19,7 @@ function guessApi(player, guess) {
   );
 }
 
-const labelStyle = `text-3xl font-bold`;
+const labelStyle = `pt-10 text-3xl font-bold`;
 
 const inputStyle = `
   my-3 py-2 px-4
@@ -75,7 +75,10 @@ export default function Index() {
         <title>Nafnaveisla 🎉</title>
       </Head>
 
-      <main className="text-center mx-5 my-10">
+      {/* Background image */}
+      <div className="bgTeddy" />
+
+      <main className="text-center mx-5 my-0">
         <p className={labelStyle}>{label}</p>
 
         <input

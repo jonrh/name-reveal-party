@@ -1,3 +1,17 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+.bgTeddy {
+    position: fixed;
+    height: 100vh;
+    width: 100vw;
+    overflow: hidden;
+    z-index: -1;
+
+    background-image: url("/bg.jpg");
+    /* Source is 2000x2000px which is a bit too big, this scales it down */
+    background-size: 500px;
+    background-repeat: repeat;
+    opacity: 0.3;
+}
