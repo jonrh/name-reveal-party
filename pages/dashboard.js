@@ -1,7 +1,28 @@
 import React, { useState, useEffect } from "react";
 import faunadb, { query as q } from "faunadb";
 
-export default function Dashboard() {
+/**
+ * Before the dashboard loads a hidden input field is presented. To log in we
+ * paste the Fauna secret key. Once pasted the Dashboard will be initialised
+ * and connects to Fauna with that secret. A hacky little way to securely
+ * connect to Fauna without revealing the secret.
+ */
+export default function Authentication() {
+  const [faunaSecret, setFaunaSecret] = useState("");
+
+  if (faunaSecret !== "") return <Dashboard faunaSecret={faunaSecret} />;
+
+  return (
+    <input
+      type="password"
+      value={faunaSecret}
+      onChange={event => setFaunaSecret(event.target.value)}
+    />
+  );
+}
+
+function Dashboard(props) {
+  const { faunaSecret } = props;
   const [guesses, setGuesses] = useState([]);
   const addGuess = guess => setGuesses(prevGuesses => [guess, ...prevGuesses]);
 
@@ -24,11 +45,7 @@ export default function Dashboard() {
 
   useEffect(() => {
     const faunaClient = new faunadb.Client({
-      // Todo: figure out a better way to expose the Fauna secret. Hardcoded
-      //  for now. May need to use password protection that decodes the value.
-      //  One simple way would be to present an input before the dashboard
-      //  loads which would be the Fauna secret. Probably the simplest.
-      secret: "replace me",
+      secret: faunaSecret,
       domain: "db.eu.fauna.com",
     });
 
