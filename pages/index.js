@@ -104,9 +104,8 @@ export default function Index() {
         </div>
 
         {/* Debug: */}
-        <p className="mt-5">Ready: {ready.toString()}</p>
-        <p>Player: {player}</p>
-        <p>Guesses: {guesses.join(", ")}</p>
+        <p className="mt-5">Þú heitir: {player}</p>
+        <p>Þín gisk: {guesses.join(", ")}</p>
       </main>
     </>
   )
