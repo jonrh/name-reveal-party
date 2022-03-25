@@ -31,7 +31,7 @@ const inputStyle = `
 const buttonStyle = `
   py-4 px-4
   text-2xl
-  bg-gray-300
+  bg-teddy-dark hover:bg-teddy
   rounded w-full
 `;
 
