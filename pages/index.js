@@ -45,7 +45,7 @@ export default function Index() {
   // of creating re-usable components and pass down props and such.
   const label = ready ? "Systir Nóa heitir:" : "Hvað heitir þú?";
   const placeholder = ready ? "nafn" : "Dæmi: Jón Jónsson";
-  const buttonLabel = ready ? "Giska️" : "Áfram!";
+  const buttonLabel = ready ? "Giska" : "Áfram!";
   const inputValue = ready ? guess : player;
 
   // Returns a random integer between 0 - 9999. This is a hacky
@@ -73,6 +73,9 @@ export default function Index() {
     <>
       <Head>
         <title>Nafnaveisla 🎉</title>
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+        <link href="https://fonts.googleapis.com/css2?family=Lilita+One&display=swap" rel="stylesheet" />
       </Head>
 
       {/* Background image */}

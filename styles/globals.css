@@ -2,6 +2,12 @@
 @tailwind components;
 @tailwind utilities;
 
+@layer base {
+    html {
+        font-family: 'Lilita One', system-ui, sans-serif;
+    }
+}
+
 .bgTeddy {
     position: fixed;
     height: 100vh;
