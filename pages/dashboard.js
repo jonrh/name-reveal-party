@@ -3,7 +3,7 @@ import faunadb, { query as q } from "faunadb";
 
 export default function Dashboard() {
   const [guesses, setGuesses] = useState([]);
-  const addGuess = guess => setGuesses(prevGuesses => [...prevGuesses, guess]);
+  const addGuess = guess => setGuesses(prevGuesses => [guess, ...prevGuesses]);
 
   const report = event => {
     console.log("New stream event:")

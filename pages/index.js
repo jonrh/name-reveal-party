@@ -60,7 +60,7 @@ export default function Index() {
     if (ready) {
       guessApi(player, guess).then(response => console.log(response));
 
-      setGuesses(prevState => [...prevState, guess]);
+      setGuesses(prevState => [guess, ...prevState]);
       setGuess("");
     } else {
       // If I want to enable random number for player names
