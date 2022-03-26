@@ -190,9 +190,10 @@ function Dashboard(props) {
       .start();
 
     return () => stream.close(); // cleanup
-  }, []);
+  }, [correctName]);
 
   console.log("Winner state: " + winner);
+  console.log("correctName: "+ correctName);
 
   return (
     <main className="text-center">
