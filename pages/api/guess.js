@@ -18,9 +18,6 @@ import faunadb, { query as q } from "faunadb";
  *   + FAUNA_SECRET_SERVER: secret key for the Fauna database
  */
 export default async (req, res) => {
-  // Maybe: check if guess === process.env.NAME
-  // and return that the guess was correct
-
   const faunaClient = new faunadb.Client({
     secret: process.env.FAUNA_SECRET_SERVER,
     domain: "db.eu.fauna.com",
