@@ -109,7 +109,7 @@ function Dashboard(props) {
 
       addGuess(guess);
 
-      if (guess === correctName) {
+      if (guess.toLowerCase() === correctName.toLowerCase()) {
         setWinner(player);
       }
     }
