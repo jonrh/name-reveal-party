@@ -1,5 +1,48 @@
 import React, { useState, useEffect } from "react";
 import faunadb, { query as q } from "faunadb";
+import Confetti from "react-confetti";
+
+/** Makes a POST request to the API with a guess what the name is. */
+function getCorrectName(secret) {
+  return fetch(
+    "/api/answer",
+    {
+      method: "POST",
+      headers: {
+        "Accept": "application/json",
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        secret: secret,
+      })
+    }
+  );
+}
+
+function Winner({ winner }) {
+  const [windowSize, setWindowSize] = useState({
+    width: 0,
+    height: 0,
+  });
+
+  useEffect(() => {
+    setWindowSize({
+      width: window.innerWidth,
+      height: window.innerHeight,
+    })
+  }, []);
+
+  // Winner has not been declared yet
+  if (winner === "") return null;
+
+  console.log("We have a winner!!!" + winner);
+
+  return (
+    <>
+      <Confetti width={windowSize.width} height={windowSize.height} />
+    </>
+  );
+}
 
 /**
  * Before the dashboard loads a hidden input field is presented. To log in we
@@ -19,7 +62,6 @@ export default function Authentication() {
   /** Persist the secret to localStorage, enables manual refresh if needed */
   useEffect(() => {
     if (faunaSecret && faunaSecret !== "") {
-      console.log("setting fauna secret");
       localStorage.setItem("secret", faunaSecret);
     }
   }, [faunaSecret]);
@@ -38,6 +80,9 @@ export default function Authentication() {
 function Dashboard(props) {
   const { faunaSecret } = props;
 
+  const [correctName, setCorrectName] = useState("");
+  const [winner, setWinner] = useState("");
+
   const [resetAllData, setResetAllData] = useState(false);
   const toggleResetAllData = () => setResetAllData(prev => !prev);
 
@@ -45,8 +90,8 @@ function Dashboard(props) {
   const addGuess = guess => setGuesses(prevGuesses => [guess, ...prevGuesses]);
 
   const onFaunaEvent = event => {
-    console.log("New stream event:")
-    console.log(event);
+    // console.log("New stream event:")
+    // console.log(event);
 
     // event is a number when the stream starts, after that it is an object
     const readyToProcessEvents = typeof(event) !== "number";
@@ -59,8 +104,27 @@ function Dashboard(props) {
       // console.log(`Guess: ${guess}`); // Debug
 
       addGuess(guess);
+
+      console.log("guess: "+ guess);
+      console.log("correctName: "+ correctName);
+
+      if (guess === correctName) {
+        setWinner(player);
+        console.log("correct name guessed");
+      }
     }
   }
+
+  /** Fetches and sets the correct name of the child */
+  useEffect(() => {
+    getCorrectName(faunaSecret).then(response => {
+      response.json().then(resp => {
+        setCorrectName(resp.answer);
+        console.log(resp);
+        console.log(resp.answer);
+      });
+    })
+  }, []);
 
   /** Deletes all guesses in Fauna */
   useEffect(() => {
@@ -105,6 +169,8 @@ function Dashboard(props) {
     faunaClient.query(
       q.Paginate(allGuessesRef, { size: 100000})
     ).then(response => {
+      // Todo: add entries in one go instead of one at a time. By
+      //  iterating we cause a lot of re-renders that are not needed.
       response.data.forEach(entry => {
         const player = entry[0];
         const guess = entry[1];
@@ -124,12 +190,16 @@ function Dashboard(props) {
       .start();
 
     return () => stream.close(); // cleanup
-  }, [])
+  }, []);
+
+  console.log("Winner state: " + winner);
 
   return (
     <main className="text-center">
       {/* Background image */}
       <div className="bgTeddy" />
+
+      <Winner winner={winner} />
 
       <button
         className="opacity-0 hover:opacity-100"
