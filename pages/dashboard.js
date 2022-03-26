@@ -19,7 +19,7 @@ function getCorrectName(secret) {
   );
 }
 
-function Winner({ winner }) {
+function Winner({ winner, correctName }) {
   const [windowSize, setWindowSize] = useState({
     width: 0,
     height: 0,
@@ -42,6 +42,11 @@ function Winner({ winner }) {
         height={windowSize.height}
         numberOfPieces={1000}
       />
+
+      <p className="text-6xl py-20">Systir Nóa heitir:</p>
+      <p className="text-9xl">{correctName}</p>
+      <p className="text-5xl mt-20">Sigurvegari:</p>
+      <p className="text-5xl mt-10 mb-20">{winner}</p>
     </>
   );
 }
@@ -192,7 +197,7 @@ function Dashboard(props) {
       {/* Background image */}
       <div className="bgTeddy" />
 
-      <Winner winner={winner} />
+      <Winner winner={winner} correctName={correctName} />
 
       <button
         className="opacity-0 hover:opacity-100"
@@ -202,8 +207,7 @@ function Dashboard(props) {
       </button>
 
       <p className="text-8xl">❤️</p>
-      <h1 className="text-8xl font-bold">Nafnaveisla</h1>
-      <p className="mt-20 text-8xl">Gisk: {guesses.length}</p>
+      <p className="mt-0 text-8xl">Gisk: {guesses.length}</p>
       <ul className="mt-20">
         {guesses.slice(0, 5).map(guess =>
           <li className="text-6xl mt-5" key={Math.random()}>{guess}</li>
