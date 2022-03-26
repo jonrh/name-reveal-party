@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 import Head from "next/head";
-import Confetti from "react-confetti";
 
 /** Makes a POST request to the API with a guess what the name is. */
 function guessApi(player, guess) {
@@ -56,13 +55,9 @@ export default function Index() {
   // A hacky way to re-use the input and submit button UI instead
   // of creating re-usable components and pass down props and such.
   const label = ready ? "Systir Nóa heitir:" : "Hvað heitir þú?";
-  const placeholder = ready ? "nafn" : "Dæmi: Jón Jónsson";
+  const placeholder = ready ? "nafn (án eftirnafns)" : "Dæmi: Jón Jónsson";
   const buttonLabel = ready ? "Giska" : "Áfram!";
   const inputValue = ready ? guess : player;
-
-  // Returns a random integer between 0 - 9999. This is a hacky
-  // safety net in case any two players will have the same name.
-  const random = () => Math.floor(Math.random() * 10000);
 
   const onInput = (event) => {
     ready ? setGuess(event.target.value) : setPlayer(event.target.value);
@@ -75,8 +70,6 @@ export default function Index() {
       setGuesses(prevState => [guess, ...prevState]);
       setGuess("");
     } else {
-      // If I want to enable random number for player names
-      // setPlayer(player +" #"+ random());
       setReady(true);
     }
   };
@@ -89,8 +82,6 @@ export default function Index() {
 
       {/* Background image */}
       <div className="bgTeddy" />
-
-      {/*<Confetti width={windowSize.width} height={windowSize.height} />*/}
 
       <main className="text-center mx-5 my-0">
         <p className={labelStyle}>{label}</p>
