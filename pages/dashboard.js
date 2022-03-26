@@ -109,7 +109,7 @@ function Dashboard(props) {
 
       addGuess(guess);
 
-      const nobodyHasWonYet = winner !== "";
+      const nobodyHasWonYet = winner === "";
       const correctGuess = guess.toLowerCase() === correctName.toLowerCase();
 
       if (correctGuess && nobodyHasWonYet) {
@@ -123,8 +123,6 @@ function Dashboard(props) {
     getCorrectName(faunaSecret).then(response => {
       response.json().then(resp => {
         setCorrectName(resp.answer);
-        console.log(resp);
-        console.log(resp.answer);
       });
     })
   }, []);
@@ -149,7 +147,6 @@ function Dashboard(props) {
         )
       ).then(results => {
           console.log("All guesses in Fauna deleted");
-          console.log(results);
           setGuesses([]);
         }).catch(error => {
           console.log("Error attempting to delete all guesses in Fauna");
