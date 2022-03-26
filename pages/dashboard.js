@@ -96,26 +96,18 @@ function Dashboard(props) {
   const [guesses, setGuesses] = useState([]);
   const addGuess = guess => setGuesses(prevGuesses => [guess, ...prevGuesses]);
 
+  /** Manage state when a new guess document is received */
   const onFaunaEvent = event => {
-    // console.log("New stream event:")
+    // console.log("New stream event:");
     // console.log(event);
 
-    // event is a number when the stream starts, after that it is an object
-    const readyToProcessEvents = typeof(event) !== "number";
-    const notRemoveEvent = event.action !== "remove";
+    const [player, guess] = event.index.values;
+    const newGuessAdded = event.action === "add";
+    const nobodyHasWonYet = winner === "";
+    const correctGuess = guess.toLowerCase() === correctName.toLowerCase();
 
-    if (readyToProcessEvents && notRemoveEvent) {
-      const [player, guess] = event.index.values;
-
-      addGuess(guess);
-
-      const nobodyHasWonYet = winner === "";
-      const correctGuess = guess.toLowerCase() === correctName.toLowerCase();
-
-      if (correctGuess && nobodyHasWonYet) {
-        setWinner(player);
-      }
-    }
+    if (newGuessAdded && nobodyHasWonYet) addGuess(guess);
+    if (newGuessAdded && correctGuess) setWinner(player);
   }
 
   /** Fetches and sets the correct name of the child */
@@ -163,34 +155,23 @@ function Dashboard(props) {
     });
 
     const allGuessesRef = q.Match(q.Index("all_guesses"));
-    const streamOptions = { fields: ["action", "document", "index"]};
+    const streamOptions = { fields: ["action", "index"]};
 
     // Fetch all existing guesses. Just in case we need to refresh.
-    faunaClient.query(
-      q.Paginate(allGuessesRef, { size: 100000})
-    ).then(response => {
-      // Todo: add entries in one go instead of one at a time. By
-      //  iterating we cause a lot of re-renders that are not needed.
-      response.data.forEach(entry => {
-        const player = entry[0];
-        const guess = entry[1];
-
-        addGuess(guess);
-      })
-    })
+    faunaClient.query(q.Paginate(allGuessesRef, { size: 100000}))
+      .then(resp => setGuesses(resp.data.reverse().map(entry => entry[1])));
 
     // Subscribe to guess updates sent by Fauna to keep a live update
     const stream = faunaClient.stream(allGuessesRef, streamOptions)
-      .on("start", start => onFaunaEvent(start))
       .on("set", set => onFaunaEvent(set))
       .on("error", error => {
         console.log("Error: ", error);
-        stream.close;
+        stream.close();
       })
       .start();
 
     return () => stream.close(); // cleanup
-  }, [correctName]);
+  }, [correctName, winner]);
 
   return (
     <main className="text-center">
