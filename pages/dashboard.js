@@ -113,9 +113,12 @@ function Dashboard(props) {
   }, [])
 
   return (
-    <main className="text-center mx-5 my-5">
+    <main className="text-center mx-5">
+      {/* Background image */}
+      <div className="bgTeddy" />
+
       <button
-        className="text-white hover:text-black"
+        className="opacity-0 hover:opacity-100"
         onClick={toggleResetAllData}
       >
         delete all data
