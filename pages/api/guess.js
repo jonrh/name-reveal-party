@@ -41,5 +41,8 @@ export default async (req, res) => {
     .then(resp => console.log(resp))
     .catch(error => console.log(error));
 
+  await insert;
+  await faunaClient.close();
+
   res.status(200).json({ results: "results" });
 }
