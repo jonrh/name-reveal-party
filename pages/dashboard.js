@@ -109,7 +109,10 @@ function Dashboard(props) {
 
       addGuess(guess);
 
-      if (guess.toLowerCase() === correctName.toLowerCase()) {
+      const nobodyHasWonYet = winner !== "";
+      const correctGuess = guess.toLowerCase() === correctName.toLowerCase();
+
+      if (correctGuess && nobodyHasWonYet) {
         setWinner(player);
       }
     }
