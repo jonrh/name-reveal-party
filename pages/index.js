@@ -1,23 +1,6 @@
 import React, { useState, useEffect } from "react";
 import Head from "next/head";
-
-/** Makes a POST request to the API with a guess what the name is. */
-function guessApi(player, guess) {
-  return fetch(
-    "/api/guess",
-    {
-      method: "POST",
-      headers: {
-        "Accept": "application/json",
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        player: player,
-        guess: guess,
-      })
-    }
-  );
-}
+import { guessApi } from "../lib/api";
 
 const labelStyle = `pt-10 text-3xl font-bold`;
 

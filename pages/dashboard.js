@@ -1,23 +1,7 @@
 import React, { useState, useEffect } from "react";
 import faunadb, { query as q } from "faunadb";
 import Confetti from "react-confetti";
-
-/** Makes a POST request to the API with a guess what the name is. */
-function getCorrectName(secret) {
-  return fetch(
-    "/api/answer",
-    {
-      method: "POST",
-      headers: {
-        "Accept": "application/json",
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        secret: secret,
-      })
-    }
-  );
-}
+import { getCorrectName} from "../lib/api";
 
 function Winner({ winner, correctName }) {
   const [windowSize, setWindowSize] = useState({
