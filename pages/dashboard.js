@@ -19,7 +19,6 @@ function getCorrectName(secret) {
   );
 }
 
-let timesWon = 0
 function Winner({ winner }) {
   const [windowSize, setWindowSize] = useState({
     width: 0,
@@ -36,11 +35,13 @@ function Winner({ winner }) {
   // Winner has not been declared yet
   if (winner === "") return null;
 
-  console.log("We have a winner!!!" + winner);
-  timesWon++;
   return (
     <>
-      <Confetti width={windowSize.width} height={windowSize.height} numberOfPieces={timesWon * 100} />
+      <Confetti
+        width={windowSize.width}
+        height={windowSize.height}
+        numberOfPieces={1000}
+      />
     </>
   );
 }
