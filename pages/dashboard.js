@@ -101,17 +101,10 @@ function Dashboard(props) {
     if (readyToProcessEvents && notRemoveEvent) {
       const [player, guess] = event.index.values;
 
-      // console.log(`Player: ${player}`); // Debug
-      // console.log(`Guess: ${guess}`); // Debug
-
       addGuess(guess);
-
-      console.log("guess: "+ guess);
-      console.log("correctName: "+ correctName);
 
       if (guess === correctName) {
         setWinner(player);
-        console.log("correct name guessed");
       }
     }
   }
@@ -192,9 +185,6 @@ function Dashboard(props) {
 
     return () => stream.close(); // cleanup
   }, [correctName]);
-
-  console.log("Winner state: " + winner);
-  console.log("correctName: "+ correctName);
 
   return (
     <main className="text-center">
