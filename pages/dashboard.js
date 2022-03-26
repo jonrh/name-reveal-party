@@ -10,6 +10,20 @@ import faunadb, { query as q } from "faunadb";
 export default function Authentication() {
   const [faunaSecret, setFaunaSecret] = useState("");
 
+  /** Checks if the secret is stored in localStorage */
+  useEffect(() => {
+    const localSecret = localStorage.getItem("secret");
+    if (localSecret) setFaunaSecret(localSecret);
+  }, []);
+
+  /** Persist the secret to localStorage, enables manual refresh if needed */
+  useEffect(() => {
+    if (faunaSecret && faunaSecret !== "") {
+      console.log("setting fauna secret");
+      localStorage.setItem("secret", faunaSecret);
+    }
+  }, [faunaSecret]);
+
   if (faunaSecret !== "") return <Dashboard faunaSecret={faunaSecret} />;
 
   return (
@@ -75,7 +89,7 @@ function Dashboard(props) {
           console.log(error);
       })
     }
-  }, [resetAllData])
+  }, [resetAllData]);
 
   /** Fetch existing data and stream subscription */
   useEffect(() => {
@@ -113,7 +127,7 @@ function Dashboard(props) {
   }, [])
 
   return (
-    <main className="text-center mx-5">
+    <main className="text-center">
       {/* Background image */}
       <div className="bgTeddy" />
 
