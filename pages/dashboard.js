@@ -209,7 +209,7 @@ function Dashboard(props) {
       <p className="text-8xl">❤️</p>
       <p className="mt-0 text-8xl">Gisk: {guesses.length}</p>
       <ul className="mt-20">
-        {guesses.slice(0, 5).map(guess =>
+        {guesses.map(guess =>
           <li className="text-6xl mt-5" key={Math.random()}>{guess}</li>
         )}
       </ul>
