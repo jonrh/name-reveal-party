@@ -68,6 +68,34 @@ export default function Authentication() {
   );
 }
 
+/** List of the top 10 names that have been guessed ordered by popularity */
+function Top10Names({ guesses }) {
+  const count = {}; // key: guess, value: times guessed
+
+  for (const guess of guesses) {
+    if (count[guess]) {
+      count[guess] += 1;
+    } else {
+      count[guess] = 1;
+    }
+  }
+
+  const descSort = (a, b) => a[1] < b[1] ? 1 : -1;
+
+  // Example [["Jón", 10], ["Rúnar", 7], ...]
+  const sorted = Object.entries(count)
+    .sort(descSort)
+    .slice(0, 10); // only pick top ten
+
+  return (
+    <ul className="mt-20">
+      {sorted.map(([guess, count]) =>
+        <li className="text-6xl mt-5" key={guess}>{count +": "+ guess}</li>
+      )}
+    </ul>
+  );
+}
+
 function Dashboard(props) {
   const { faunaSecret } = props;
 
@@ -172,12 +200,26 @@ function Dashboard(props) {
       </button>
 
       <p className="text-8xl">❤️️ nafn.jonrh.is ❤️️</p>
-      <p className="mt-10 text-8xl">Gisk: {guesses.length}</p>
-      <ul className="mt-20">
-        {guesses.map(guess =>
-          <li className="text-6xl mt-5" key={Math.random()}>{guess}</li>
-        )}
-      </ul>
+
+      <div className="grid grid-cols-2">
+        <div className="mt-10">
+          <p className="mt-10 text-8xl">Oftast</p>
+          <Top10Names guesses={guesses} />
+        </div>
+
+        <div className="mt-10">
+          <p className="mt-10 text-8xl">Gisk: {guesses.length}</p>
+          <ul className="mt-20">
+            {guesses.map(guess =>
+              <li className="text-6xl mt-5" key={Math.random()}>{guess}</li>
+            )}
+          </ul>
+        </div>
+      </div>
+
+
+
+
     </main>
   );
 }
