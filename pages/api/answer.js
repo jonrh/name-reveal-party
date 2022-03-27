@@ -5,7 +5,7 @@
  */
 export default async (req, res) => {
   const correctSecret = req.body["secret"] === process.env.FAUNA_SECRET_SERVER;
-  const answer = correctSecret ? process.env.NAME2 : "incorrect secret";
+  const answer = correctSecret ? process.env.NAME : "incorrect secret";
 
   res.status(200).json({ answer: answer });
 }
