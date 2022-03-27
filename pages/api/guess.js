@@ -18,28 +18,30 @@ import faunadb, { query as q } from "faunadb";
  *   + FAUNA_SECRET_SERVER: secret key for the Fauna database
  */
 export default async (req, res) => {
-  const faunaClient = new faunadb.Client({
-    secret: process.env.FAUNA_SECRET_SERVER,
-    domain: "db.eu.fauna.com",
-  });
-
-  const insert = faunaClient.query(
-    q.Create(
-      q.Collection("guesses"),
-      { data: {
-        player: req.body["player"],
-        guess: req.body["guess"],
-      }}
-    )
-  );
-
-  console.log("Output from Fauna insert: ");
-  insert
-    .then(resp => console.log(resp))
-    .catch(error => console.log(error));
-
-  await insert;
-  await faunaClient.close();
+  // Temporarily disable guessing while I work on statistics
+  //
+  // const faunaClient = new faunadb.Client({
+  //   secret: process.env.FAUNA_SECRET_SERVER,
+  //   domain: "db.eu.fauna.com",
+  // });
+  //
+  // const insert = faunaClient.query(
+  //   q.Create(
+  //     q.Collection("guesses"),
+  //     { data: {
+  //       player: req.body["player"],
+  //       guess: req.body["guess"],
+  //     }}
+  //   )
+  // );
+  //
+  // console.log("Output from Fauna insert: ");
+  // insert
+  //   .then(resp => console.log(resp))
+  //   .catch(error => console.log(error));
+  //
+  // await insert;
+  // await faunaClient.close();
 
   res.status(200).json({ results: "results" });
 }
