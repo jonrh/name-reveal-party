@@ -23,17 +23,6 @@ export default function Index() {
   const [player, setPlayer] = useState("");
   const [guess, setGuess] = useState("");
   const [guesses, setGuesses] = useState([]);
-  const [windowSize, setWindowSize] = useState({
-    width: 0,
-    height: 0,
-  });
-
-  useEffect(() => {
-    setWindowSize({
-      width: window.innerWidth,
-      height: window.innerHeight,
-    })
-  }, []);
 
   // A hacky way to re-use the input and submit button UI instead
   // of creating re-usable components and pass down props and such.
