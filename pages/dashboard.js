@@ -68,29 +68,37 @@ export default function Authentication() {
   );
 }
 
-/** List of the top 10 names that have been guessed ordered by popularity */
-function Top10Names({ guesses }) {
-  const count = {}; // key: guess, value: times guessed
+function Top10List(props) {
+  const { names } = props; // Either guesses or players
 
-  for (const guess of guesses) {
-    if (count[guess]) {
-      count[guess] += 1;
+  const count = {};
+
+  for (const name of names) {
+    if (count[name.toLowerCase()]) {
+      count[name.toLowerCase()] += 1;
     } else {
-      count[guess] = 1;
+      count[name.toLowerCase()] = 1;
     }
   }
 
   const descSort = (a, b) => a[1] < b[1] ? 1 : -1;
+  const capitaliseFirstLetters = str =>
+    str.split(' ').map(s => s.charAt(0).toUpperCase() + s.slice(1)).join(' ');
 
   // Example [["Jón", 10], ["Rúnar", 7], ...]
   const sorted = Object.entries(count)
     .sort(descSort)
     .slice(0, 10); // only pick top ten
 
+  console.log("Top10");
+  console.log(sorted);
+
   return (
     <ul className="mt-20">
-      {sorted.map(([guess, count]) =>
-        <li className="text-6xl mt-5" key={guess}>{count +": "+ guess}</li>
+      {sorted.map(([name, count]) =>
+        <li className="text-6xl mt-5" key={name}>
+          {count +": "+ capitaliseFirstLetters(name)}
+        </li>
       )}
     </ul>
   );
@@ -108,6 +116,9 @@ function Dashboard(props) {
   const [guesses, setGuesses] = useState([]);
   const addGuess = guess => setGuesses(prevGuesses => [guess, ...prevGuesses]);
 
+  // On every guess the player name is added, used later for frequency
+  const [players, setPlayers] = useState([]);
+
   /** Manage state when a new guess document is received */
   const onFaunaEvent = event => {
     // console.log("New stream event:");
@@ -118,7 +129,11 @@ function Dashboard(props) {
     const nobodyHasWonYet = winner === "";
     const correctGuess = guess.toLowerCase() === correctName.toLowerCase();
 
-    if (newGuessAdded && nobodyHasWonYet) addGuess(guess);
+    if (newGuessAdded && nobodyHasWonYet) {
+      addGuess(guess);
+      setPlayers(prevState => [player, ...prevState]);
+    }
+
     if (newGuessAdded && correctGuess) setWinner(player);
   }
 
@@ -152,6 +167,7 @@ function Dashboard(props) {
       ).then(results => {
           console.log("All guesses in Fauna deleted");
           setGuesses([]);
+          setPlayers([]);
         }).catch(error => {
           console.log("Error attempting to delete all guesses in Fauna");
           console.log(error);
@@ -171,7 +187,10 @@ function Dashboard(props) {
 
     // Fetch all existing guesses. Just in case we need to refresh.
     faunaClient.query(q.Paginate(allGuessesRef, { size: 100000}))
-      .then(resp => setGuesses(resp.data.reverse().map(entry => entry[1])));
+      .then(resp => {
+        setGuesses(resp.data.reverse().map(entry => entry[1]));
+        setPlayers(resp.data.reverse().map(entry => entry[0]));
+      });
 
     // Subscribe to guess updates sent by Fauna to keep a live update
     const stream = faunaClient.stream(allGuessesRef, streamOptions)
@@ -201,10 +220,10 @@ function Dashboard(props) {
 
       <p className="text-8xl">❤️️ nafn.jonrh.is ❤️️</p>
 
-      <div className="grid grid-cols-2">
+      <div className="grid grid-cols-3">
         <div className="mt-10">
           <p className="mt-10 text-8xl">Oftast</p>
-          <Top10Names guesses={guesses} />
+          <Top10List names={guesses} />
         </div>
 
         <div className="mt-10">
@@ -214,6 +233,11 @@ function Dashboard(props) {
               <li className="text-6xl mt-5" key={Math.random()}>{guess}</li>
             )}
           </ul>
+        </div>
+
+        <div className="mt-10">
+          <p className="mt-10 text-8xl">Spilarar</p>
+          <Top10List names={players} />
         </div>
       </div>
 
