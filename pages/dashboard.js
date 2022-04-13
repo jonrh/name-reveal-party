@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from "react";
-import faunadb, { query as q } from "faunadb";
+import { query as q } from "faunadb";
 import Confetti from "react-confetti";
 import { getCorrectName} from "../lib/api";
+import { createFaunaClient } from "../lib/fauna";
 
 function Winner({ winner, correctName }) {
   const [windowSize, setWindowSize] = useState({
@@ -149,10 +150,7 @@ function Dashboard(props) {
   /** Deletes all guesses in Fauna */
   useEffect(() => {
     if (resetAllData) {
-      const faunaClient = new faunadb.Client({
-        secret: faunaSecret,
-        domain: "db.eu.fauna.com",
-      });
+      const faunaClient = createFaunaClient(faunaSecret);
 
       faunaClient.query(
         q.Map(
@@ -177,10 +175,7 @@ function Dashboard(props) {
 
   /** Fetch existing data and stream subscription */
   useEffect(() => {
-    const faunaClient = new faunadb.Client({
-      secret: faunaSecret,
-      domain: "db.eu.fauna.com",
-    });
+    const faunaClient = createFaunaClient(faunaSecret);
 
     const allGuessesRef = q.Match(q.Index("all_guesses"));
     const streamOptions = { fields: ["action", "index"]};

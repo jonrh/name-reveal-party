@@ -1,4 +1,5 @@
-import faunadb, { query as q } from "faunadb";
+import { query as q } from "faunadb";
+import {createFaunaClient} from "../../lib/fauna";
 
 /**
  * An API endpoint invoked with every name guess by a player. Expects a JSON
@@ -18,10 +19,7 @@ import faunadb, { query as q } from "faunadb";
  *   + FAUNA_SECRET_SERVER: secret key for the Fauna database
  */
 export default async (req, res) => {
-  const faunaClient = new faunadb.Client({
-    secret: process.env.FAUNA_SECRET_SERVER,
-    domain: "db.eu.fauna.com",
-  });
+  const faunaClient = createFaunaClient(process.env.FAUNA_SECRET_SERVER);
 
   const insert = faunaClient.query(
     q.Create(

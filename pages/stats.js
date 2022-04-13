@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
-import faunadb, { query as q } from "faunadb";
+import { query as q } from "faunadb";
+import { createFaunaClient } from "../lib/fauna";
 
 /**
  * Before the dashboard loads a hidden input field is presented. To log in we
@@ -40,10 +41,7 @@ function Stats(props) {
 
   /** Fetch existing data and stream subscription */
   useEffect(() => {
-    const faunaClient = new faunadb.Client({
-      secret: faunaSecret,
-      domain: "db.eu.fauna.com",
-    });
+    const faunaClient = createFaunaClient(faunaSecret);
 
     const allDocuments = q.Paginate(
       q.Documents(q.Collection("guesses")), { size: 100000 }
