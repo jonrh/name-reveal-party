@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { query as q } from "faunadb";
 import Confetti from "react-confetti";
 import { getCorrectName} from "../lib/api";
-import { createFaunaClient } from "../lib/fauna";
+import { createFaunaClient, deleteAllGuesses } from "../lib/fauna";
 
 function Winner({ winner, correctName }) {
   const [windowSize, setWindowSize] = useState({
@@ -150,26 +150,16 @@ function Dashboard(props) {
   /** Deletes all guesses in Fauna */
   useEffect(() => {
     if (resetAllData) {
-      const faunaClient = createFaunaClient(faunaSecret);
-
-      faunaClient.query(
-        q.Map(
-          q.Paginate(q.Documents(q.Collection("guesses")),
-            { size: 100000 }
-          ),
-          q.Lambda(
-           ["ref"],
-            q.Delete(q.Var("ref"))
-          )
-        )
-      ).then(results => {
+      deleteAllGuesses(faunaSecret)
+        .then(results => {
           console.log("All guesses in Fauna deleted");
           setGuesses([]);
           setPlayers([]);
-        }).catch(error => {
+        })
+        .catch(error => {
           console.log("Error attempting to delete all guesses in Fauna");
           console.log(error);
-      })
+        });
     }
   }, [resetAllData]);
 
@@ -235,9 +225,6 @@ function Dashboard(props) {
           <Top10List names={players} />
         </div>
       </div>
-
-
-
 
     </main>
   );
