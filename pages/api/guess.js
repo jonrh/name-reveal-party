@@ -1,5 +1,5 @@
 import { query as q } from "faunadb";
-import {createFaunaClient} from "../../lib/fauna";
+import { createFaunaClient } from "../../lib/fauna";
 
 /**
  * An API endpoint invoked with every name guess by a player. Expects a JSON

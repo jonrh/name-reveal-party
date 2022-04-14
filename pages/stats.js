@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { query as q } from "faunadb";
-import { createFaunaClient } from "../lib/fauna";
+import { getAllGuesses } from "../lib/fauna";
 
 /**
  * Before the dashboard loads a hidden input field is presented. To log in we
@@ -41,33 +41,8 @@ function Stats(props) {
 
   /** Fetch existing data and stream subscription */
   useEffect(() => {
-    const faunaClient = createFaunaClient(faunaSecret);
-
-    const allDocuments = q.Paginate(
-      q.Documents(q.Collection("guesses")), { size: 100000 }
-    );
-
-    faunaClient.query(
-      q.Map(
-        allDocuments,
-        q.Lambda(x => q.Get(x))
-      )
-    ).then(resp => {
-      const ascSort = (a, b) => a.ts > b.ts ? 1 : -1;
-      const faunaGuesses = resp.data.map(guess => ({
-        ts: guess.ts,
-        player: guess.data.player,
-        guess: guess.data.guess,
-
-        // Divide by 1000 because Fauna uses unix time stamp in
-        // microseconds, Date() expects the time in milliseconds.
-        datetime: new Date(guess.ts / 1000),
-      })).sort(ascSort);
-
-      setGuesses(faunaGuesses);
-    });
-
-  }, []);
+    getAllGuesses(faunaSecret).then(guesses => setGuesses(guesses));
+  }, [])
 
   return (
     <main className="">
